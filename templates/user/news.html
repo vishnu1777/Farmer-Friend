@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">News</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="searchNewsTitle" id="searchNewsTitle" class="form-control" placeholder="News Title">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="btnViewNews" onclick="searchNews()">
+                                            View
+                                        </button>
+                                        <a href="/news/" class="btn btn-warning">
+                                            Clear
+                                        </a>
+                                        <button class="btn btn-success" id="btnAddNews"
+                                                data-bs-target="#addNewsModal" data-bs-toggle="modal">
+                                            Add News
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Title</th>
+                                    <th>Date Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.nw_title}}</td>
+                                    <td>{{data.nw_date_time}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updNewsModal{{data.nw_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delnews/{{data.nw_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updNewsModal{{data.nw_rid}}" data-keyboard="false"
+                                        data-backdrop="static" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="newsForm" action="/updnews/{{data.nw_rid}}" method="POST" enctype="multipart/form-data">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update News</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">News Title</label>
+                                                            <input type="text" class="form-control" id="newsTitle" name="newsTitle" value="{{data.nw_title}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Body</label>
+                                                            <textarea class="form-control" name="newsBody" id="newsBody" required>{{data.nw_body}}</textarea>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Thumbnail Imagec</label>
+                                                            <input type="file" class="form-control" accept="image/*" id="newsThumbnail" name="newsThumbnail" autocomplete="off" required />
+                                                        </div>
+                                                        <div id="formMessageDiv"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary" id="addNews"
+                                                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                    </div>
+                                                    <!-- /modal-footer -->
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNewsModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="newsForm" action="/addnews/" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add News</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-1">News Title</label>
+                        <input type="text" class="form-control" id="newsTitle" name="newsTitle" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Body</label>
+                        <textarea class="form-control" name="newsBody" id="newsBody" required></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Thumbnail Imagec</label>
+                        <input type="file" class="form-control" accept="image/*" id="newsThumbnail" name="newsThumbnail" autocomplete="off" required />
+                    </div>
+                    <div id="formMessageDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="addNews"
+                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                </div>
+                <!-- /modal-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    function searchNews() {
+        $.ajax({
+            url: '/news/',
+            type: 'POST',
+            data: {
+                searchValue: $('#searchNewsTitle').val()
+            },
+            success: function (data, status) {
+                var newDoc = document.open("text/html", "replace");
+                newDoc.write(data);
+                newDoc.close();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

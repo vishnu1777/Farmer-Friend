@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Crops</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="searchCropName" id="searchCropName" class="form-control" placeholder="Crop Name">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="btnViewCrop" onclick="searchCrop()">
+                                            View
+                                        </button>
+                                        <a href="/crops/" class="btn btn-warning">
+                                            Clear
+                                        </a>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#addCropsModal" data-bs-toggle="modal">
+                                            Add New Crop
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Variety</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.crop_name}}</td>
+                                    {% if data.crop_type == 1 %}
+                                    <td>Agriculture</td>
+                                    {% else %}
+                                    <td>Horticulture</td>
+                                    {% endif %}
+                                    <td>{{data.crop_variety.vr_name}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updCropsModal{{data.crop_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delcrop/{{data.crop_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updCropsModal{{data.crop_rid}}" data-keyboard="false"
+                                    data-backdrop="static" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="cropForm" action="/updcrop/{{data.crop_rid}}" method="POST" enctype="multipart/form-data">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Update Crop</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Select Crop Type</label>
+                                                        <select class="form-control" name="cropType" id="cropType" required>
+                                                            <option value="1">Agriculture</option>
+                                                            <option value="2">Horticulture</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Crop Name</label>
+                                                        <input type="text" class="form-control" id="cropName" name="cropName" value="{{data.crop_name}}" autocomplete="off" required/>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Select Variety</label>
+                                                        <select class="form-control" name="cropVariety" id="cropVariety" required>
+                                                            {% for variety in variety_data %}
+                                                                <option value="{{variety.vr_rid}}">{{variety.vr_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Select Disease</label>
+                                                        <select name="disease" id="disease" class="form-control" required>
+                                                            {% for disease in disease_data %}
+                                                                <option value="{{disease.ds_rid}}">{{disease.ds_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Duration (in days)</label>
+                                                        <input type="number" class="form-control" id="duration" name="duration" value="{{data.crop_duration}}" autocomplete="off" required/>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Crop Image</label>
+                                                        <input type="file" class="form-control" accept="image/*" id="cropImage" name="cropImage" autocomplete="off" required/>
+                                                    </div>
+                                                    <div id="formMessageDiv"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary"
+                                                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                </div>
+                                                <!-- /modal-footer -->
+                                            </form>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCropsModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="cropForm" action="/addcrop/" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Crop</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Select Crop Type</label>
+                        <select class="form-control" name="cropType" id="cropType" required>
+                            <option value="1">Agriculture</option>
+                            <option value="2">Horticulture</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Crop Name</label>
+                        <input type="text" class="form-control" id="cropName" name="cropName" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Select Variety</label>
+                        <select class="form-control" name="cropVariety" id="cropVariety" required>
+                            {% for variety in variety_data %}
+                                <option value="{{variety.vr_rid}}">{{variety.vr_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Select Disease</label>
+                        <select name="disease" id="disease" class="form-control" required>
+                            {% for disease in disease_data %}
+                                <option value="{{disease.ds_rid}}">{{disease.ds_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Duration (in days)</label>
+                        <input type="number" class="form-control" id="duration" name="duration" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Crop Image</label>
+                        <input type="file" class="form-control" accept="image/*" id="cropImage" name="cropImage" autocomplete="off" required/>
+                    </div>
+                    <div id="formMessageDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary"
+                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                </div>
+                <!-- /modal-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function searchCrop() {
+        $.ajax({
+            url: '/crops/',
+            type: 'POST',
+            data: {
+                searchValue: $('#searchCropName').val()
+            },
+            success: function (data, status) {
+                var newDoc = document.open("text/html", "replace");
+                newDoc.write(data);
+                newDoc.close();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

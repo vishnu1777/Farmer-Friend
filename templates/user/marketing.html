@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Marketing</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <!-- <td>
+                                        <input type="text" name="searchCropName" id="searchCropName" class="form-control" placeholder="Crop Name">
+                                    </td> -->
+                                    <td>
+                                        <!-- <button class="btn btn-primary" id="btnViewCropPrice">
+                                            View
+                                        </button>
+                                        <a href="/marketing/" class="btn btn-warning">
+                                            Clear
+                                        </a> -->
+                                        <button class="btn btn-success" id="btnAddNewPrice"
+                                                data-bs-target="#addNewPriceModal" data-bs-toggle="modal">
+                                            Add New Price
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Crop Name</th>
+                                    <th>Price (in Rs)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.pr_crop_id.crop_name}}</td>
+                                    <td>{{data.pr_price}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updPriceModal{{data.pr_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delprice/{{data.pr_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updPriceModal{{data.pr_rid}}" data-keyboard="false"
+                                    data-backdrop="static" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form id="cropForm" action="/updprice/{{data.pr_rid}}" method="POST" enctype="multipart/form-data">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Update Price</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Select Crop</label>
+                                                        <select class="form-control" name="crop" id="crop" required>
+                                                            {% for crop in crop_data %}
+                                                                <option value="{{crop.crop_rid}}">{{crop.crop_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="mb-1">Price</label>
+                                                        <input type="number" class="form-control" id="cropPrice" name="cropPrice" value="{{data.pr_price}}" autocomplete="off" required/>
+                                                    </div>
+                                                    <div id="formMessageDiv"></div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary"
+                                                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                </div>
+                                                <!-- /modal-footer -->
+                                            </form>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNewPriceModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="cropForm" action="/addprice/" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Price</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Select Crop</label>
+                        <select class="form-control" name="crop" id="crop" required>
+                            {% for crop in crop_data %}
+                                <option value="{{crop.crop_rid}}">{{crop.crop_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Price</label>
+                        <input type="number" class="form-control" id="cropPrice" name="cropPrice" value="" autocomplete="off" required/>
+                    </div>
+                    <div id="formMessageDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary"
+                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                </div>
+                <!-- /modal-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

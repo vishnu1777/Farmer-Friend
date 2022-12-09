@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Schemes</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="searchSchemeName" id="searchSchemeName" class="form-control" placeholder="Scheme Name">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="btnViewScheme" onclick="searchScheme()">
+                                            View
+                                        </button>
+                                        <a href="/scheme/" class="btn btn-warning">
+                                            Clear
+                                        </a>
+                                        <button class="btn btn-success" id="btnAddNewMachine"
+                                                data-bs-target="#addSchemeModal" data-bs-toggle="modal">
+                                            Add New Scheme
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.sc_id}}</td>
+                                    <td>{{data.sc_title}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updSchemeModal{{data.sc_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delsch/{{data.sc_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updSchemeModal{{data.sc_rid}}" data-keyboard="false"
+                                    data-backdrop="static" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="schemeForm" action="/updscheme/{{data.sc_rid}}" method="POST" enctype="multipart/form-data">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update Scheme</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Scheme ID</label>
+                                                            <input type="text" class="form-control" id="schemeId" name="schemeId" autocomplete="off" value="{{data.sc_id}}" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Scheme Title</label>
+                                                            <input type="text" class="form-control" id="schemeTitle" name="schemeTitle" value="{{data.sc_title}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Scheme Desc</label>
+                                                            <textarea class="form-control" name="schemeDesc" id="schemeDesc" required>{{data.sc_description}}</textarea>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Thumbnail Imagec</label>
+                                                            <input type="file" class="form-control" accept="image/*" id="schemeImage" name="schemeImage" autocomplete="off" required />
+                                                        </div>
+                                                        <div id="formMessageDiv"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary" id="addNewScheme"
+                                                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                    </div>
+                                                    <!-- /modal-footer -->
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addSchemeModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="schemeForm" action="/addscheme/" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Scheme</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Scheme ID</label>
+                        <input type="text" class="form-control" id="schemeId" name="schemeId" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Scheme Title</label>
+                        <input type="text" class="form-control" id="schemeTitle" name="schemeTitle" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Scheme Desc</label>
+                        <textarea class="form-control" name="schemeDesc" id="schemeDesc" required></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Thumbnail Imagec</label>
+                        <input type="file" class="form-control" accept="image/*" id="schemeImage" name="schemeImage" autocomplete="off" required />
+                    </div>
+                    <div id="formMessageDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="addNewScheme"
+                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                </div>
+                <!-- /modal-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    function searchScheme() {
+        $.ajax({
+            url: '/scheme/',
+            type: 'POST',
+            data: {
+                searchValue: $('#searchSchemeName').val()
+            },
+            success: function (data, status) {
+                var newDoc = document.open("text/html", "replace");
+                newDoc.write(data);
+                newDoc.close();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

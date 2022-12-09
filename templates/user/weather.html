@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Weather</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-success" id="btnAddNewPrice"
+                                        data-bs-target="#addNewForcastModal" data-bs-toggle="modal">
+                                            Add New Weather Forcast
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Precipitation</th>
+                                    <th>Humidity</th>
+                                    <th>Wind</th>
+                                    <th>Updated Date Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.wt_precipitation}}</td>
+                                    <td>{{data.wt_humidity}}</td>
+                                    <td>{{data.wt_wind}}</td>
+                                    <td>{{data.wt_date}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updWeatherModal{{data.wt_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delwhr/{{data.wt_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updWeatherModal{{data.wt_rid}}" data-keyboard="false"
+                                    data-backdrop="static" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="weatherForm" action="/updwhr/{{data.wt_rid}}" method="POST">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update Weather Forcast</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Date</label>
+                                                            <input type="date" class="form-control" id="date" name="date" value="{{data.wt_date}}" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Precipitation (percentage)</label>
+                                                            <input type="text" class="form-control" id="precipitation" name="precipitation" value="{{data.wt_precipitation}}" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Humidity (percentage)</label>
+                                                            <input type="text" class="form-control" id="humidity" name="humidity" value="{{data.wt_humidity}}" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Wind (km/h)</label>
+                                                            <input type="text" class="form-control" id="wind" name="wind" value="{{data.wt_wind}}" required/>
+                                                        </div>
+                                                        
+                                                        <div id="formMessageDiv"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary" id="addNewForcast"
+                                                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                    </div>
+                                                    <!-- /modal-footer -->
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNewForcastModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="weatherForm" action="/addwhr/" method="POST">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Weather Forcast</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Precipitation (percentage)</label>
+                            <input type="text" class="form-control" id="precipitation" name="precipitation" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Humidity (percentage)</label>
+                            <input type="text" class="form-control" id="humidity" name="humidity" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Wind (km/h)</label>
+                            <input type="text" class="form-control" id="wind" name="wind" required/>
+                        </div>
+                        
+                        <div id="formMessageDiv"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="addNewForcast"
+                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                    </div>
+                    <!-- /modal-footer -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

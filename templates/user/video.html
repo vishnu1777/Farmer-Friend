@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Videos</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="searchVideoName" id="searchVideoName" class="form-control" placeholder="Video Name">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="btnViewVideo">
+                                            View
+                                        </button>
+                                        <button class="btn btn-warning" id="btnClear">
+                                            Clear
+                                        </button>
+                                        <button class="btn btn-success" id="btnAddNewVideo"
+                                                data-bs-target="#addVideoModal" data-bs-toggle="modal">
+                                            Add New Video
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Title</th>
+                                    <th>Url</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.vd_title}}</td>
+                                    <td>{{data.vd_video_url}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updMachineModal{{data.vd_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delvid{{data.vd_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updMachineModal{{data.vd_rid}}" data-keyboard="false"
+                                        data-backdrop="static" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="videoForm" action="/updvid/{{data.vd_rid}}" method="POST" enctype="multipart/form-data">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update Video</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Video Title</label>
+                                                            <input type="text" class="form-control" id="videoTitle" name="videoTitle" autocomplete="off" value="{{data.vd_title}}" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Thumbnail</label>
+                                                            <input type="file" class="form-control" accept="image/*" id="videoThumbNail" name="videoThumbNail" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Select Video File</label>
+                                                            <input type="file" class="form-control" accept="video/mp4,video/x-m4v,video/*" id="video" name="video" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Select Video Type</label>
+                                                            <select class="form-control" name="videoType" id="videoType" required>
+                                                                <option value="1">Event</option>
+                                                                <option value="2">Other</option>
+                                                            </select>
+                                                        </div>
+                                                        <div id="formMessageDiv"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary" id="addNewVideo"
+                                                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                    </div>
+                                                    <!-- /modal-footer -->
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addVideoModal" data-keyboard="false"
+        data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="videoForm" action="/addvid/" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Video</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Video Title</label>
+                            <input type="text" class="form-control" id="videoTitle" name="videoTitle" autocomplete="off" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Thumbnail</label>
+                            <input type="file" class="form-control" accept="image/*" id="videoThumbNail" name="videoThumbNail" autocomplete="off" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Select Video File</label>
+                            <input type="file" class="form-control" accept="video/mp4,video/x-m4v,video/*" id="video" name="video" autocomplete="off" required/>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="mb-1">Select Video Type</label>
+                            <select class="form-control" name="videoType" id="videoType" required>
+                                <option value="1">Event</option>
+                                <option value="2">Other</option>
+                            </select>
+                        </div>
+                        <div id="formMessageDiv"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="addNewVideo"
+                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                    </div>
+                    <!-- /modal-footer -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include '../include/header.html' %}
+</head>
+<body>
+    {% include '../components/navbar.html' %}
+
+    <div class="container-fluid">
+        <div class="row p-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Machines</div>
+                    </div> <!-- /panel-heading -->
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" name="searchMacName" id="searchMacName" class="form-control" placeholder="Machine Name">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="btnViewMachine" onclick="searchMachine()">
+                                            View
+                                        </button>
+                                        <a href="/machines/" class="btn btn-warning">
+                                            Clear
+                                        </a>
+                                        <button class="btn btn-success" id="btnAddNewMachine"
+                                                data-bs-target="#addMachinesModal" data-bs-toggle="modal">
+                                            Add New Machine
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-hover" id="tblCrops">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Price( in Rs)</th>
+                                    <th>Contact</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{data.mc_id}}</td>
+                                    <td>{{data.mc_name}}</td>
+                                    <td>{{data.mc_price}}</td>
+                                    <td>{{data.mc_contact}}</td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                data-bs-target="#updMachineModal{{data.mc_rid}}" data-bs-toggle="modal">
+                                            Edit
+                                        </button>
+
+                                        <a href="/delmch/{{data.mc_rid}}" class="btn btn-danger">Delete</a>
+                                    </td>
+
+                                    <div class="modal fade" id="updMachineModal{{data.mc_rid}}" data-keyboard="false"
+                                        data-backdrop="static" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form id="machineForm" action="/updmch/{{data.mc_rid}}" method="POST" enctype="multipart/form-data">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Update Machine</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Machine ID</label>
+                                                            <input type="text" class="form-control" id="machineId" name="machineId" value="{{data.mc_id}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Machine Name</label>
+                                                            <input type="text" class="form-control" id="machineName" name="machineName" value="{{data.mc_name}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Price</label>
+                                                            <input type="text" class="form-control" id="machinePrice" name="machinePrice" value="{{data.mc_price}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Contact</label>
+                                                            <input type="number" class="form-control" id="contact" name="contact" value="{{data.mc_contact}}" autocomplete="off" required/>
+                                                        </div>
+                                                        <div class="form-group mb-3">
+                                                            <label class="mb-1">Machine Image</label>
+                                                            <input type="file" class="form-control" accept="image/*" id="machineImage" name="machineImage" autocomplete="off" required />
+                                                        </div>
+                                                        <div id="formMessageDiv"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary" id="addNewMachine"
+                                                                data-loading-text="Saving..." autocomplete="off">Save</button>
+                                                    </div>
+                                                    <!-- /modal-footer -->
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addMachinesModal" data-keyboard="false"
+     data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="machineForm" action="/addmch/" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Machine</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Machine ID</label>
+                        <input type="text" class="form-control" id="machineId" name="machineId" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Machine Name</label>
+                        <input type="text" class="form-control" id="machineName" name="machineName" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Price</label>
+                        <input type="text" class="form-control" id="machinePrice" name="machinePrice" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Contact</label>
+                        <input type="number" class="form-control" id="contact" name="contact" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="mb-1">Machine Image</label>
+                        <input type="file" class="form-control" accept="image/*" id="machineImage" name="machineImage" autocomplete="off" required />
+                    </div>
+                    <div id="formMessageDiv"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="closeModal" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="addNewMachine"
+                            data-loading-text="Saving..." autocomplete="off">Save</button>
+                </div>
+                <!-- /modal-footer -->
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    function searchMachine() {
+        $.ajax({
+            url: '/machines/',
+            type: 'POST',
+            data: {
+                searchValue: $('#searchMacName').val()
+            },
+            success: function (data, status) {
+                var newDoc = document.open("text/html", "replace");
+                newDoc.write(data);
+                newDoc.close();
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

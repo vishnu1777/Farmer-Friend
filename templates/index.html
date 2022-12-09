@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Friend</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% comment %} NavBar {% endcomment %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+        <div class="container-friend">
+            <a class="navbar-brand ms-5" href="/">Farmer Friend</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container d-flex justify-content-center align-items-center" style="width:100%;height:80vh;">
+        <form action="/adminlogin/" method="POST" class="card w-25 p-3">
+            {% csrf_token %}
+            <div class="card-header bg-white">
+                <h5>Admin Login</h5>
+            </div>
+            <div class="card-body">
+                <input type="text" name="username" class="form-control mb-3" placeholder="Username" autocomplete="off" />
+                <input type="password" name="password" class="form-control mb-3" placeholder="Password" autocomplete="off" />
+
+                <button type="submit" class="btn btn-secondary w-100">Login</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
